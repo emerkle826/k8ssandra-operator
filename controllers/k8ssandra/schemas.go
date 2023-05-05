@@ -52,7 +52,11 @@ func (r *K8ssandraClusterReconciler) checkSchemas(
 		return recResult
 	}
 
-	decommDcName := k8ssandra.GetDatacenterForDecommission(kc)
+	dcTemplate := k8ssandra.GetDatacenterForDecommission(kc)
+	decommDcName := ""
+	if dcTemplate != nil {
+		decommDcName = dcTemplate.Meta.Name
+	}
 	decommission := false
 	if decommDcName != "" {
 		decommission = kc.Status.Datacenters[decommDcName].DecommissionProgress == api.DecommUpdatingReplication
